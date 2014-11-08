@@ -48,7 +48,7 @@
   <div class="span6">
     <h2>Recent Games</h2>
     <ul id='results'>
-      <% @player.results.for_game(@game).limit(15).order('created_at desc').each do |result| %>
+      <% @player.results.for_game(@game).limit(15).most_recent_first.each do |result| %>
         <li>
           <%= format_time(result.created_at) %>
           -
