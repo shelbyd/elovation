@@ -1,6 +1,6 @@
 module Rater
   class EloRater
-    DefaultValue = 1000
+    DefaultValue = ENV['DEFAULT_ELO_RATING'] || 1000
 
     def default_attributes
       { value: DefaultValue }
@@ -66,9 +66,9 @@ module Rater
   end
 
   class TrueSkillRater
-    DefaultValue = 0
-    DefaultMean = 25
-    DefaultDeviation = 25.0/3.0
+    DefaultValue = ENV['DEFAULT_TRUESKILL_VALUE'] || 0
+    DefaultMean = ENV['DEFAULT_TRUESKILL_MEAN'] || 25
+    DefaultDeviation = DefaultMean / (ENV['DEFAULT_TRUESKILL_DEVIATION_DIVISOR'] || 3.0)
 
     def default_attributes
       { value: DefaultValue, trueskill_mean: DefaultMean, trueskill_deviation: DefaultDeviation }
