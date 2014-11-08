@@ -1,0 +1,64 @@
+<div class="hero-unit">
+  <h1><%= @player.name %> vs <%= @opponent.name %></h1>
+</div>
+
+<div class="row">
+  <div class="span6">
+    <h2>Head-to-Head Records</h2>
+    <table id='ratings'>
+      <thead>
+        <tr>
+          <th>Game</th>
+          <th>Rating Difference</th>
+          <th><abbr title='Wins'>W</abbr></th>
+          <th><abbr title='Losses'>L</abbr></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% Game.all.each do |game| %>
+
+          <% wins = @player.results.wins.for_game(game).against(@opponent).size %>
+          <% losses = @player.results.losses.for_game(game).against(@opponent).size %>
+          <tr class="<%= "unplayed" if wins == 0 and losses == 0 %>" >
+            <td>
+              <%= link_to game do %>
+                <%= game.name %>
+              <% end %>
+            </td>
+            <td><%= @player.ratings.find_or_create(game).value - @opponent.ratings.find_or_create(game).value %></td>
+            <td><%= wins %></td>
+            <td><%= losses %></td>
+          </tr>
+
+        <% end %>
+      </tbody>
+
+    </table>
+  </div>
+
+  <div class="span6">
+    <h2>Recent Games</h2>
+    <ul id='results'>
+      <% @player.results.against(@opponent).limit(15).order('created_at desc').each do |result| %>
+        <li>
+          <%= format_time(result.created_at) %>
+          -
+          <% if result.winners.include?(@player) %>
+            <% if result.losers.empty? %>
+              Tied
+            <% else %>
+              Won against <strong><%= result.losers.map(&:name).join(", ") %></strong>
+            <% end %>
+          <% else %>
+            Lost to <strong><%= result.winners.map(&:name).join(", ") %></strong>
+          <% end %>
+          in <%= result.game.name %>
+          <% if result.most_recent? -%>
+            <%= link_to "Delete", game_result_path(result.game, result), class: "btn btn-danger", method: :delete, confirm: "Are you sure?" %>
+          <% end -%>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

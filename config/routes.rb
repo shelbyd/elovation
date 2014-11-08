@@ -6,6 +6,7 @@ Elovation::Application.routes.draw do
 
   resources :players do
     resources :games, only: [:show], controller: 'player_games'
+    resources :opponents, only: [:show], controller: 'player_opponents'
   end
 
   get '/dashboard' => 'dashboard#show', as: :dashboard
